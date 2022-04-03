@@ -3,16 +3,15 @@ import "/d3-radial-axis/dist/d3-radial-axis.js"
 import "/lodash/lodash.js"
 
 let zoomLevel = 1.0
-
+let scaleMin = 0.1, scaleMax = 1.0, scaleMid = 0.3
 let labeledTickStep = 0.05 * zoomLevel
-let labeledTicks = _.range(0.1, 1.0 + labeledTickStep, labeledTickStep)
 
-let secondaryTicks = _.range(0.1,0.3,0.002).concat(
-    _.range(0.3,1.005,0.005)
+let labeledTicks = _.range(scaleMin, scaleMax + labeledTickStep, labeledTickStep)
+let secondaryTicks =
+    _.range(scaleMin, scaleMid, labeledTickStep / 25).concat(
+    _.range(scaleMid, scaleMax, labeledTickStep / 10)
 )
-let tertiaryTicks = _.range(0.1,0.3,0.01).concat(
-    _.range(0.3,1.01,0.01)
-)
+let tertiaryTicks = _.range(scaleMin, scaleMax, labeledTickStep / 5)
 
 const svgWidth = 800
 const svgHeight = 600
