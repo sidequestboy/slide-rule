@@ -3,3 +3,19 @@ path {
     stroke-width: 1;
     fill: none;
 }
+
+.tick text {
+    display: none;
+}
+
+.labeled-ticks text {
+    display: block;
+}
+
+.tick:hover {
+    stroke-width: 3;
+}
+
+.tick:hover text {
+    display: block;
+}

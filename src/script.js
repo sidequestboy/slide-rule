@@ -40,7 +40,6 @@ let outerScale = d3.scaleLog()
     .range([0, Math.PI * 2])
 
 const radius = 200
-const zoom = d3.zoom()
 
 let innerAxis = d3.axisRadialInner(innerScale, radius)
     .ticks(labeledTicks.length - 1, ",f")
@@ -48,22 +47,22 @@ let innerAxis = d3.axisRadialInner(innerScale, radius)
     .tickSize(24)
 
 let innerAxisSecondary = d3.axisRadialInner(innerScale, radius)
+    .ticks(secondaryTicks.length - 1, ",f")
     .tickValues(secondaryTicks.map(v => v * innerScaleFactor))
-    .tickFormat("")
     .tickSize(6)
 
 let innerAxisTertiary = d3.axisRadialInner(innerScale, radius)
+    .ticks(tertiaryTicks.length - 1, ",f")
     .tickValues(tertiaryTicks.map(v => v * innerScaleFactor))
-    .tickFormat("")
     .tickSize(12)
 
-innerG.append('g')
+innerG.append('g').classed('labeled-ticks', true)
     .call(innerAxis)
 
-innerG.append('g')
+innerG.append('g').classed('secondary-ticks', true)
     .call(innerAxisSecondary)
 
-innerG.append('g')
+innerG.append('g').classed('tertiary-ticks', true)
     .call(innerAxisTertiary)
 
 let outerAxis = d3.axisRadialOuter(innerScale, radius)
@@ -72,22 +71,22 @@ let outerAxis = d3.axisRadialOuter(innerScale, radius)
     .tickSize(24)
 
 let outerAxisSecondary = d3.axisRadialOuter(innerScale, radius)
+    .ticks(secondaryTicks.length - 1, ",f")
     .tickValues(secondaryTicks.map(v => v * outerScaleFactor))
-    .tickFormat("")
     .tickSize(6)
 
 let outerAxisTertiary = d3.axisRadialOuter(innerScale, radius)
+    .ticks(tertiaryTicks.length - 1, ",f")
     .tickValues(tertiaryTicks.map(v => v * outerScaleFactor))
-    .tickFormat("")
     .tickSize(12)
 
-outerG.append('g')
+outerG.append('g').classed('labeled-ticks', true)
     .call(outerAxis)
 
-outerG.append('g')
+outerG.append('g').classed('secondary-ticks', true)
     .call(outerAxisSecondary)
 
-outerG.append('g')
+outerG.append('g').classed('tertiary-ticks', true)
     .call(outerAxisTertiary)
 
 
