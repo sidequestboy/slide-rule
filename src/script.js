@@ -91,4 +91,15 @@ outerG.append('g')
     .call(outerAxisTertiary)
 
 
-outerG.attr("transform", `rotate(30)`)
+d3.select("#outer-angle-slider").on("input", function() {
+    updateOuterAngle(+this.value)
+})
+
+updateOuterAngle(0)
+
+function updateOuterAngle(outerAngle) {
+    d3.select("#outer-angle-value").text(outerAngle)
+    d3.select("#outer-angle-slider").property("value", outerAngle)
+    d3.select(".outer")
+        .attr("transform", `rotate(-${outerAngle})`)
+}
