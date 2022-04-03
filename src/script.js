@@ -2,9 +2,11 @@ import "/d3/dist/d3.js"
 import "/d3-radial-axis/dist/d3-radial-axis.js"
 import "/lodash/lodash.js"
 
-let zoomLevel = 1.0
+let zoomLevel = 2
 let scaleMin = 0.1, scaleMax = 1.0, scaleMid = 0.3
-let labeledTickStep = 0.05 * zoomLevel
+let labeledTickStep = 0.1 / zoomLevel
+let innerScaleFactor = 100
+let outerScaleFactor = 1
 
 let labeledTicks = _.range(scaleMin, scaleMax + labeledTickStep, labeledTickStep)
 let secondaryTicks =
@@ -20,6 +22,15 @@ const svg = d3.select('svg')
     .attr("width", svgWidth)
     .attr("height", svgHeight)
 
+const g = svg.append("g")
+    .attr("transform", `translate(${svgWidth/2},${svgHeight/2})`)
+
+const innerG = g.append("g")
+    .classed("inner", true)
+
+const outerG = g.append("g")
+    .classed("outer", true)
+
 let innerScale = d3.scaleLog()
     .domain([d3.min(labeledTicks), d3.max(labeledTicks)])
     .range([0, Math.PI * 2])
@@ -33,54 +44,51 @@ const zoom = d3.zoom()
 
 let innerAxis = d3.axisRadialInner(innerScale, radius)
     .ticks(labeledTicks.length - 1, ",f")
-    .tickValues(labeledTicks.slice(1))
+    .tickValues(labeledTicks.slice(1).map(v => v * innerScaleFactor))
     .tickSize(24)
 
 let innerAxisSecondary = d3.axisRadialInner(innerScale, radius)
-    .tickValues(secondaryTicks)
+    .tickValues(secondaryTicks.map(v => v * innerScaleFactor))
     .tickFormat("")
     .tickSize(6)
 
 let innerAxisTertiary = d3.axisRadialInner(innerScale, radius)
-    .tickValues(tertiaryTicks)
+    .tickValues(tertiaryTicks.map(v => v * innerScaleFactor))
     .tickFormat("")
     .tickSize(12)
 
-svg.append('g')
+innerG.append('g')
     .call(innerAxis)
-    .attr("transform", `translate(${svgWidth/2},${svgHeight/2})`)
 
-svg.append('g')
+innerG.append('g')
     .call(innerAxisSecondary)
-    .attr("transform", `translate(${svgWidth/2},${svgHeight/2})`)
 
-svg.append('g')
+innerG.append('g')
     .call(innerAxisTertiary)
-    .attr("transform", `translate(${svgWidth/2},${svgHeight/2})`)
 
 let outerAxis = d3.axisRadialOuter(innerScale, radius)
     .ticks(labeledTicks.length - 1, ",f")
-    .tickValues(labeledTicks.slice(1))
+    .tickValues(labeledTicks.slice(1).map(v => v * outerScaleFactor))
     .tickSize(24)
 
 let outerAxisSecondary = d3.axisRadialOuter(innerScale, radius)
-    .tickValues(secondaryTicks)
+    .tickValues(secondaryTicks.map(v => v * outerScaleFactor))
     .tickFormat("")
     .tickSize(6)
 
 let outerAxisTertiary = d3.axisRadialOuter(innerScale, radius)
-    .tickValues(tertiaryTicks)
+    .tickValues(tertiaryTicks.map(v => v * outerScaleFactor))
     .tickFormat("")
     .tickSize(12)
 
-svg.append('g')
+outerG.append('g')
     .call(outerAxis)
-    .attr("transform", `translate(${svgWidth/2},${svgHeight/2})`)
 
-svg.append('g')
+outerG.append('g')
     .call(outerAxisSecondary)
-    .attr("transform", `translate(${svgWidth/2},${svgHeight/2})`)
 
-svg.append('g')
+outerG.append('g')
     .call(outerAxisTertiary)
-    .attr("transform", `translate(${svgWidth/2},${svgHeight/2})`)
+
+
+outerG.attr("transform", `rotate(30)`)
