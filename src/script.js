@@ -61,15 +61,16 @@ function main() {
       .classed("inner", true)
 
   innerG.append("g")
-      .classed("inner-axis-0", true)
+      .classed("inner-axis", true)
+      .classed("labeled-axis", true)
       .call(innerAxes[0])
 
   innerG.append("g")
-    .classed("inner-axis-1", true)
+    .classed("inner-axis", true)
     .call(innerAxes[1])
 
   innerG.append("g")
-    .classed("inner-axis-2", true)
+    .classed("inner-axis", true)
     .call(innerAxes[2])
 
   const outerG = containerG.append("g")
@@ -77,47 +78,60 @@ function main() {
 
   outerG.append("g")
     .classed("outer-axis", true)
-    .classed("outer-axis-0", true)
+    .classed("labeled-axis", true)
     .call(outerAxes[0])
 
   outerG.append("g")
     .classed("outer-axis", true)
-    .classed("outer-axis-1", true)
     .call(outerAxes[1])
 
   outerG.append("g")
     .classed("outer-axis", true)
-    .classed("outer-axis-2", true)
     .call(outerAxes[2])
 
-  function setInnerAxesAngle(angle) {
+  function setAxesAngle(angle, outer) {
     // angle in radians pls
-    innerScale.range([angle, angle + 2 * Math.PI])
-    innerG.select(".inner-axis-0")
-      .call(innerAxes[0])
-    innerG.select(".inner-axis-1")
-      .call(innerAxes[1])
-    innerG.select(".inner-axis-2")
-      .call(innerAxes[2])
-  }
-  function setOuterAxesAngle(angle) {
-    // angle in radians pls
-    outerScale.range([angle, angle + 2 * Math.PI])
-    outerG.select(".outer-axis-0")
-      .call(outerAxes[0])
-    outerG.select(".outer-axis-1")
-      .call(outerAxes[1])
-    outerG.select(".outer-axis-2")
-      .call(outerAxes[2])
+    let scale, g, axes, className
+    if (outer) {
+      scale = outerScale
+      g = outerG
+      axes = outerAxes
+      className = "outer-axis"
+    } else {
+      scale = innerScale
+      g = innerG
+      axes = innerAxes
+      className = "inner-axis"
+    }
+
+    let prevAngle = scale.range()[0]
+    let animationAngle = 360 * (angle-prevAngle) / (2 * Math.PI)
+    let transitionTime = 2000
+
+    scale.range([angle, angle + 2 * Math.PI])
+    
+    g.selectAll(`.${className}`)
+      .transition()
+        .duration(transitionTime)
+        .attr("transform", `rotate(${animationAngle})`)
+      .end()
+      .then(() => {
+        d3.selectAll(`.${className}`)
+          .each((d, i, nodes) => {
+            d3.select(nodes[i])
+              .attr("transform", null)
+              .call(axes[i])
+          })
+      })
   }
 
   d3.selectAll(".inner .tick").on("click", (e, d) => {
     let offset = -(Math.log(d) / Math.log(10)) * 2 * Math.PI
-    setInnerAxesAngle(offset)
+    setAxesAngle(offset, false)
   })
   d3.selectAll(".outer .tick").on("click", (e, d) => {
     let offset = -(Math.log(d) / Math.log(10)) * 2 * Math.PI
-    setOuterAxesAngle(offset)
+    setAxesAngle(offset, true)
   })
 }
 

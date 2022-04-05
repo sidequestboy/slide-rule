@@ -8,8 +8,7 @@ path {
     display: none;
 }
 
-.inner-axis-0 text,
-.outer-axis-0 text {
+.labeled-axis text {
     display: block;
 }
 
